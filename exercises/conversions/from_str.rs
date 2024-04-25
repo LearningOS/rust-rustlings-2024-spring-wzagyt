@@ -9,6 +9,7 @@
 // Execute `rustlings hint from_str` or use the `hint` watch subcommand for a
 // hint.
 
+use std::io::Split;
 use std::num::ParseIntError;
 use std::str::FromStr;
 
@@ -31,7 +32,6 @@ enum ParsePersonError {
     ParseInt(ParseIntError),
 }
 
-// I AM NOT DONE
 
 // Steps:
 // 1. If the length of the provided string is 0, an error should be returned
@@ -48,11 +48,24 @@ enum ParsePersonError {
 // As an aside: `Box<dyn Error>` implements `From<&'_ str>`. This means that if
 // you want to return a string error message, you can do so via just using
 // return `Err("my error message".into())`.
+//use std::io::Split;
 
 impl FromStr for Person {
     type Err = ParsePersonError;
     fn from_str(s: &str) -> Result<Person, Self::Err> {
+        if s.is_empty(){
+            return Err(ParsePersonError::Empty);
+        }
+        let splitted:Vec<&str>=s.split(",").collect();
+        match &splitted [..] {
+             &[name,_] if name.is_empty()=>Err(ParsePersonError::NoName),
+             &[name,age_str] => match age_str.parse::<usize>(){
+                Ok(age)=>Ok( Person{name:name.to_string(),age,}),
+                Err(e)=>Err(ParsePersonError::ParseInt(e)),
+        }
+            _ => Err(ParsePersonError::BadLen)
     }
+}
 }
 
 fn main() {
