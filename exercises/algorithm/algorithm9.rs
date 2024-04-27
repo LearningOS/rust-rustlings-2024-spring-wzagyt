@@ -2,7 +2,7 @@
 	heap
 	This question requires you to implement a binary heap function
 */
-// I AM NOT DONE
+
 
 use std::cmp::Ord;
 use std::default::Default;
@@ -66,6 +66,30 @@ where
             right
         } else {
             left
+        }
+    }
+    fn heapify_up(&mut self, mut idx: usize) {
+        let mut current_idx = idx;
+        let mut parent_idx = self.parent_idx(idx);
+    
+        while current_idx > 1 && (self.comparator)(&self.items[current_idx], &self.items[parent_idx]) {
+            self.items.swap(current_idx, parent_idx);
+            current_idx = parent_idx;
+            parent_idx = self.parent_idx(current_idx);
+        }
+    }
+    
+    fn heapify_down(&mut self, mut idx: usize) {
+        let mut current_idx = idx;
+    
+        while self.children_present(current_idx) {
+            let smallest_child = self.smallest_child_idx(current_idx);
+            if (self.comparator)(&self.items[smallest_child], &self.items[current_idx]) {
+                self.items.swap(smallest_child, current_idx);
+                current_idx = smallest_child;
+            } else {
+                break;
+            }
         }
     }
 }
