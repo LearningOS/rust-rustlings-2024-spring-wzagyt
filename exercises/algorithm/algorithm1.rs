@@ -2,7 +2,7 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
+
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -69,16 +69,52 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
+	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self  where
+    T: Ord + Copy,
 	{
-		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+      
+
+    let mut list_c = LinkedList::<T>::new();
+    let mut la = list_a.start;
+    let mut lb = list_b.start;
+
+    while let (Some(node_a), Some(node_b)) = (la, lb) {
+        unsafe {
+            if (*node_a.as_ptr()).val <= (*node_b.as_ptr()).val {
+                list_c.add((*node_a.as_ptr()).val);
+                la = (*node_a.as_ptr()).next;
+            } else {
+                list_c.add((*node_b.as_ptr()).val);
+                lb = (*node_b.as_ptr()).next;
+            }
         }
-	}
+    }
+
+    // If there are remaining elements in list_a
+    while let Some(node_a) = la {
+        unsafe {
+            list_c.add((*node_a.as_ptr()).val);
+            la = (*node_a.as_ptr()).next;
+        }
+    }
+
+    // If there are remaining elements in list_b
+    while let Some(node_b) = lb {
+        unsafe {
+            list_c.add((*node_b.as_ptr()).val);
+            lb = (*node_b.as_ptr()).next;
+        }
+    }
+
+    list_c
 }
+    
+}
+
+
+
+      
+
 
 impl<T> Display for LinkedList<T>
 where
